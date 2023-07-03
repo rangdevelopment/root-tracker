@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2023, Rang <rangdevelopment@gmail.com>
+ * based on
  * Copyright (c) 2016-2017, Cameron Moberg <Moberg@tuta.io>
  * Copyright (c) 2017, Adam <Adam@sigterm.info>
  * All rights reserved.
@@ -106,7 +108,6 @@ enum Root {
 		if (msg.contains(filter1)) {
 			return true;
 		}
-
 		return false;
 	}
 
