@@ -31,20 +31,21 @@ import net.runelite.api.ItemID;
 
 
 enum Root {
-	NMAGE("North Sorcerer's Tower (Nmage)", "nmage", null, null, ItemID.COMBAT_BRACELET),
-	SMAGE("South Sorcerer's Tower (Smage)", "smage", null, null, ItemID.CAPE_OF_LEGENDS),
-	DRAY("Draynor (Dray)", "dray", null, null, ItemID.AMULET_OF_GLORY),
-	CHURCH("Seers Church (Church)", "chur", null, null, ItemID.HOLY_SYMBOL),
-	NSEERS("North Seers (NSeers)", "seer", "n", null, ItemID.MAPLE_LOGS),
-	SEERS("Seers Bank", "seer", null, "n", ItemID.CAMELOT_TELEPORT),
-	GLADE("Xeric's Glade (Glade)", "glade", null, null, ItemID.XERICS_TALISMAN),
-	BEE("Seers Bees (Bees)", "bee", null, null, ItemID.BEE_ON_A_STICK),
-	ZALC("Zalcano (Zalc)", "zalc", null, null, ItemID.ZALCANO_SHARD),
-	MYTH("Myth's Guild (Myth)", "myth", null, null, ItemID.MYTHICAL_CAPE_22114),
-	ARC("Arceuus Magics (Arc)", "arc", null, null, ItemID.BOOK_OF_THE_DEAD),
-	PRIFF_T("Prifddinas Teaks (Prif Teaks)", "prif", "t", null, ItemID.TEAK_LOGS),
-	PRIFF_M("Prifddinas Mahogany (Prif Mahog)", "prif", "m", null, ItemID.MAHOGANY_LOGS),
-	YAK("Neitiznot (Yak)", "yak", null, null, ItemID.HELM_OF_NEITIZNOT),
+	NMAGE("North Sorcerer's Tower (Nmage)", "nmage", null,null, null, ItemID.COMBAT_BRACELET),
+	SMAGE("South Sorcerer's Tower (Smage)", "smage", null,null, null, ItemID.CAPE_OF_LEGENDS),
+	DRAY("Draynor (Dray)", "dray", null, null,null, ItemID.AMULET_OF_GLORY),
+	CHURCH("Seers Church (Church)", "chur", null, null,null, ItemID.HOLY_SYMBOL),
+	N_SEERS("North Seers (NSeers)", "seer", "n", null,null, ItemID.MAPLE_LOGS),
+	S_SEERS("South Seers (Seers Oak)", "seer", null, "n","bank", ItemID.CAMELOT_TELEPORT),
+	SEERS("Seers Bank", "seer", "bank", "n",null, ItemID.CAMELOT_TELEPORT),
+	GLADE("Xeric's Glade (Glade)", "glade", null,null, null, ItemID.XERICS_TALISMAN),
+	BEE("Seers Bees (Bees)", "bee", null, null,null, ItemID.BEE_ON_A_STICK),
+	ZALC("Zalcano (Zalc)", "zalc", null, null,null, ItemID.ZALCANO_SHARD),
+	MYTH("Myth's Guild (Myth)", "myth", null, null,null, ItemID.MYTHICAL_CAPE_22114),
+	ARC("Arceuus Magics (Arc)", "arc", null, null,null, ItemID.BOOK_OF_THE_DEAD),
+	PRIFF_T("Prifddinas Teaks (Prif Teaks)", "prif", "t", null,null, ItemID.TEAK_LOGS),
+	PRIFF_M("Prifddinas Mahogany (Prif Mahog)", "prif", "m", null,null, ItemID.MAHOGANY_LOGS),
+	YAK("Neitiznot (Yak)", "yak", null, null,null, ItemID.HELM_OF_NEITIZNOT),
 	;
 
 	private static final Map<String, Root> roots;
@@ -53,6 +54,7 @@ enum Root {
 	private final String filter1;
 	private final String filter2;
 	private final String exclude;
+	private final String exclude2;
 	private final int itemSpriteId;
 
 	static {
@@ -65,11 +67,12 @@ enum Root {
 		roots = builder.build();
 	}
 
-	Root(String name, String filter1, String filter2, String exclude, int itemSpriteId) {
+	Root(String name, String filter1, String filter2, String exclude, String exclude2, int itemSpriteId) {
 		this.name = name;
 		this.filter1 = filter1;
 		this.filter2 = filter2;
 		this.exclude = exclude;
+		this.exclude2 = exclude2;
 		this.itemSpriteId = itemSpriteId;
 	}
 
@@ -84,6 +87,12 @@ enum Root {
 	public boolean isMatch(String msg) {
 		if (exclude != null) {
 			if (msg.contains(exclude)) {
+				return false;
+			}
+		}
+
+		if (exclude2 != null) {
+			if (msg.contains(exclude2)) {
 				return false;
 			}
 		}
@@ -108,8 +117,8 @@ enum Root {
 		if (filter2 != null) {
 			msg = msg.replace(filter2, "");
 		}
-		return msg.contains("c") || msg.contains("real");
-		// c, con, con*, conf, confirmed, real
+		return msg.contains("c") || msg.contains("real") || msg.contains("alive");
+		// c, con, con*, conf, confirmed, real, alive
 	}
 
 	public boolean isDead(String msg) {

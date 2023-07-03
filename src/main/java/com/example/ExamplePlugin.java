@@ -66,10 +66,21 @@ public class ExamplePlugin extends Plugin
 		if (chatMessage.getSender().toLowerCase().contains("root")) {
 
 			String msg = chatMessage.getMessage().toLowerCase();
-			if (msg.length() > 12) {
-				msg_short = msg.substring(0, 12);
+
+			if (msg.contains("mulch")) {
+				return;
+			}
+
+			if (msg.contains("roots")) {
+				msg_short = msg.replace("roots","");
+			} else if (msg.contains("root")) {
+				msg_short = msg.replace("root","");
 			} else {
 				msg_short = msg;
+			}
+
+			if (msg_short.length() > 12) {
+				msg_short = msg_short.substring(0, 12);
 			}
 
 			Root event = Root.find(msg_short);
@@ -90,16 +101,15 @@ public class ExamplePlugin extends Plugin
 					active_roots.remove(key);
 				}
 				// if 80 secs, it's probably too late
-				if (Duration.between(active_roots.get(key), Instant.now()).toSeconds() > 80) {
+				if (Duration.between(active_roots.get(key), Instant.now()).toSeconds() > 90) {
 					infoBoxManager.removeIf(t -> t instanceof ExampleTimer && ((ExampleTimer) t).getEvent().equals(key));
-					long new_duration = Duration.between(active_roots.get(key), Instant.now()).toSeconds() - long_dur;
+					long new_duration = long_dur - Duration.between(active_roots.get(key), Instant.now()).toSeconds();
 					ExampleTimer timer = new ExampleTimer(key, new_duration, itemManager.getImage(ItemID.TOMATO), this);
 					timer.setTooltip(key);
-					timer.setPriority(InfoBoxPriority.HIGH);
 					infoBoxManager.addInfoBox(timer);
 				}
-				// alive
-				log.info(key + " alive " + Duration.between(active_roots.get(key), Instant.now()).toSeconds() + " sec");
+				// alive debug
+				//log.info(key + " alive " + Duration.between(active_roots.get(key), Instant.now()).toSeconds() + " sec");
 			}
 		}
 	}
@@ -113,7 +123,6 @@ public class ExamplePlugin extends Plugin
 				infoBoxManager.removeIf(t -> t instanceof ExampleTimer && ((ExampleTimer) t).getEvent().equals(event.getName()));
 				ExampleTimer timer = new ExampleTimer(event.getName(), long_dur, itemManager.getImage(event.getItemSpriteId()), this);
 				timer.setTooltip(event.getName());
-				timer.setPriority(InfoBoxPriority.HIGH);
 				infoBoxManager.addInfoBox(timer);
 				active_roots.put(event.getName(),Instant.now());
 			}
