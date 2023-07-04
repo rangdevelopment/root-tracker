@@ -25,29 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.example;
+package com.rang.forestrycc;
 
 import com.google.common.collect.ImmutableMap;
+
 import java.util.Map;
 import net.runelite.api.ItemID;
 
 
 enum Root {
-	NMAGE("North Sorcerer's Tower (Nmage)", "nmage", null,null, null, ItemID.COMBAT_BRACELET),
-	SMAGE("South Sorcerer's Tower (Smage)", "smage", null,null, null, ItemID.CAPE_OF_LEGENDS),
-	DRAY("Draynor (Dray)", "dray", null, null,null, ItemID.AMULET_OF_GLORY),
+	NMAGE("North Sorcerer's Tower (Nmage)", "mage", "n",null, null, ItemID.COMBAT_BRACELET),
+	SMAGE("South Sorcerer's Tower (Smage)", "mage", "s",null, null, ItemID.CAPE_OF_LEGENDS),
+	DRAY("Draynor (Dray)", "dra", null, null,null, ItemID.AMULET_OF_GLORY),
 	CHURCH("Seers Church (Church)", "chur", null, null,null, ItemID.HOLY_SYMBOL),
-	N_SEERS("North Seers (NSeers)", "seer", "n", null,null, ItemID.MAPLE_LOGS),
-	S_SEERS("South Seers (Seers Oak)", "seer", null, "n","bank", ItemID.CAMELOT_TELEPORT),
-	SEERS("Seers Bank", "seer", "bank", "n",null, ItemID.CAMELOT_TELEPORT),
-	GLADE("Xeric's Glade (Glade)", "glade", null,null, null, ItemID.XERICS_TALISMAN),
+	N_SEERS("North Seers (NSeers)", "see", "n", null,null, ItemID.MAPLE_LOGS),
+	S_SEERS("South Seers (Seers Oaks)", "see", null, "n","bank", ItemID.CAMELOT_TELEPORT),
+	SEERS("Seers Bank (Seers)", "see", "bank", "n",null, ItemID.CAMELOT_TELEPORT),
+	GLADE("Xeric's Glade (Glade)", "glad", null,null, null, ItemID.XERICS_TALISMAN),
 	BEE("Seers Bees (Bees)", "bee", null, null,null, ItemID.BEE_ON_A_STICK),
 	ZALC("Zalcano (Zalc)", "zalc", null, null,null, ItemID.ZALCANO_SHARD),
 	MYTH("Myth's Guild (Myth)", "myth", null, null,null, ItemID.MYTHICAL_CAPE_22114),
 	ARC("Arceuus Magics (Arc)", "arc", null, null,null, ItemID.BOOK_OF_THE_DEAD),
-	PRIFF_T("Prifddinas Teaks (Prif Teaks)", "prif", "t", null,null, ItemID.TEAK_LOGS),
-	PRIFF_M("Prifddinas Mahogany (Prif Mahog)", "prif", "m", null,null, ItemID.MAHOGANY_LOGS),
+	PRIF("Prifddinas (Prif Teaks/Prif Mahog)", "prif", null, null,null, ItemID.CRYSTAL_TELEPORT_SEED),
 	YAK("Neitiznot (Yak)", "yak", null, null,null, ItemID.HELM_OF_NEITIZNOT),
+	GEYEWS("GE Yews", "ge", null, null,null, ItemID.COINS),
 	;
 
 	private static final Map<String, Root> roots;
@@ -129,8 +130,8 @@ enum Root {
 		if (filter2 != null) {
 			msg = msg.replace(filter2, "");
 		}
-		return msg.contains("d") || msg.contains("clear") || msg.contains("bust");
-		// dead, d, ded, done, clear, cleared, bust, busted
+		return msg.contains("d") || msg.contains("clear") || msg.contains("bust") || msg.contains("rip") || msg.contains("murder");
+		// dead, d, ded, done, clear, cleared, bust, busted, rip
 	}
 
 	public boolean isFake(String msg) {
@@ -151,6 +152,15 @@ enum Root {
 	public static Root find(String msg) {
 		for (String key : roots.keySet()) {
 			if (roots.get(key).isMatch(msg)) {
+				return roots.get(key);
+			}
+		}
+		return null;
+	}
+
+	public static Root findFromName(String rootName) {
+		for (String key : roots.keySet()) {
+			if (roots.get(key).getName().equals(rootName)) {
 				return roots.get(key);
 			}
 		}

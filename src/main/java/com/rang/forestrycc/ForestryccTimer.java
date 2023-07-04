@@ -24,18 +24,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.example;
+package com.rang.forestrycc;
 
 import java.awt.image.BufferedImage;
 import java.time.temporal.ChronoUnit;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.ui.overlay.infobox.Timer;
 
-class ExampleTimer extends Timer
+class ForestryccTimer extends Timer
 {
 	private final String event;
 
-	public ExampleTimer(String event, long dur, BufferedImage bossImage, Plugin plugin)
+	public ForestryccTimer(String event, long dur, BufferedImage bossImage, Plugin plugin)
 	{
 		super(dur, ChronoUnit.SECONDS, bossImage, plugin);
 		this.event = event;
