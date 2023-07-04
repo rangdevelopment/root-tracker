@@ -34,13 +34,12 @@ import net.runelite.api.ItemID;
 
 
 enum Root {
-	NMAGE("North Sorcerer's Tower (Nmage)", "mage", "n",null, null, ItemID.COMBAT_BRACELET),
-	SMAGE("South Sorcerer's Tower (Smage)", "mage", "s",null, null, ItemID.CAPE_OF_LEGENDS),
-	DRAY("Draynor (Dray)", "dra", null, null,null, ItemID.AMULET_OF_GLORY),
+	NMAGE("North Sorcerer's Tower (Nmage)", "mage", "n","s", null, ItemID.COMBAT_BRACELET),
+	SMAGE("South Sorcerer's Tower (Smage)", "mage", "s","n", null, ItemID.CAPE_OF_LEGENDS),
+	DRAY("Draynor (Dray)", "dra", null, null,null, ItemID.WILLOW_LOGS),
 	CHURCH("Seers Church (Church)", "chur", null, null,null, ItemID.HOLY_SYMBOL),
-	N_SEERS("North Seers (NSeers)", "see", "n", null,null, ItemID.MAPLE_LOGS),
-	S_SEERS("South Seers (Seers Oaks)", "see", null, "n","bank", ItemID.CAMELOT_TELEPORT),
-	SEERS("Seers Bank (Seers)", "see", "bank", "n",null, ItemID.CAMELOT_TELEPORT),
+	N_SEERS("North Seers (NSeers)", "seer", "n", "bank",null, ItemID.MAPLE_LOGS),
+	SEERS("Seers (S Seers/Seers Bank)", "seer", null, "nseer","n seer", ItemID.CAMELOT_TELEPORT),
 	GLADE("Xeric's Glade (Glade)", "glad", null,null, null, ItemID.XERICS_TALISMAN),
 	BEE("Seers Bees (Bees)", "bee", null, null,null, ItemID.BEE_ON_A_STICK),
 	ZALC("Zalcano (Zalc)", "zalc", null, null,null, ItemID.ZALCANO_SHARD),
@@ -49,6 +48,9 @@ enum Root {
 	PRIF("Prifddinas (Prif Teaks/Prif Mahog)", "prif", null, null,null, ItemID.CRYSTAL_TELEPORT_SEED),
 	YAK("Neitiznot (Yak)", "yak", null, null,null, ItemID.HELM_OF_NEITIZNOT),
 	GEYEWS("GE Yews", "ge", null, null,null, ItemID.COINS),
+	RIMM("Rimmington (Rimm)", "rim", null, null,null, ItemID.SAW),
+	LOOK("Xeric's Lookout (Lookout)", "lookout", null, null,null, ItemID.BLACK_KITESHIELD),
+	WOOD("Kourend Woodland (Woodland)", "woodland", null, null,null, ItemID.RADAS_BLESSING_4),
 	;
 
 	private static final Map<String, Root> roots;
@@ -120,7 +122,7 @@ enum Root {
 			msg = msg.replace(filter2, "");
 		}
 		return msg.contains("c") || msg.contains("real") || msg.contains("alive");
-		// c, con, con*, conf, confirmed, real, alive
+		// c, con, con*, conf, confirmed
 	}
 
 	public boolean isDead(String msg) {
@@ -130,8 +132,10 @@ enum Root {
 		if (filter2 != null) {
 			msg = msg.replace(filter2, "");
 		}
-		return msg.contains("d") || msg.contains("clear") || msg.contains("bust") || msg.contains("rip") || msg.contains("murder");
-		// dead, d, ded, done, clear, cleared, bust, busted, rip
+		boolean dead = msg.contains("d") || msg.contains("clear") || msg.contains("bust") || msg.contains("rip") || msg.contains("murder");
+		boolean false_flags = msg.contains("med"); //confirmed
+		return dead && !false_flags;
+		// dead, d, ded, done, clear, cleared, bust, busted, rip, done
 	}
 
 	public boolean isFake(String msg) {

@@ -75,8 +75,13 @@ public class ForestryccPlugin extends Plugin
 			String msg = chatMessage.getMessage().toLowerCase();
 			String msg_short = msg;
 
-			String event_type = "";
+			//ignore questions
+			if (msg.contains("?")) {
+				return;
+			}
 
+			// classify event
+			String event_type = "";
 			if (msg.contains("mulch")) {
 				event_type = "mulch";
 				msg_short = msg_short.replace("mulch","");
@@ -111,21 +116,32 @@ public class ForestryccPlugin extends Plugin
 	@Subscribe
 	public void onGameTick(GameTick tickEvent) {
 		if (client.getTickCount() % 5 == 0) {  // every 3 seconds roughly
+			for (String rootName : active_roots.keySet()) {
+				activeRootsRemoveExpired();
+				activeRootsExpirationWarning();
+			}
+		}
+	}
 
-			for (String key : active_roots.keySet()) {
-				// remove if expired
-				if (Duration.between(active_roots.get(key), Instant.now()).toSeconds() > event_duration) {
-					active_roots.remove(key);
-				}
-				// if 90 secs, it's probably too late (show tomato)
-				if (config.expirationWarning()) {
-					if (Duration.between(active_roots.get(key), Instant.now()).toSeconds() > Long.valueOf(config.expirationWarningTime())) {
-						Root event = Root.findFromName(key);
-						if (event != null) {
-							updateTimerImage(event, event_duration, itemManager.getImage(ItemID.TOMATO));
-						}
+	private void activeRootsExpirationWarning() {
+		for (String rootName : active_roots.keySet()) {
+			// if 90 secs, it's probably too late (show tomato)
+			if (config.expirationWarning()) {
+				if (Duration.between(active_roots.get(rootName), Instant.now()).toSeconds() > Long.valueOf(config.expirationWarningTime())) {
+					Root event = Root.findFromName(rootName);
+					if (event != null) {
+						updateTimerImage(event, event_duration, itemManager.getImage(ItemID.TOMATO));
 					}
 				}
+			}
+		}
+	}
+
+	private void activeRootsRemoveExpired() {
+		for (String rootName : active_roots.keySet()) {
+			// remove if expired
+			if (Duration.between(active_roots.get(rootName), Instant.now()).toSeconds() > event_duration) {
+				active_roots.remove(rootName);
 			}
 		}
 	}
@@ -167,8 +183,7 @@ public class ForestryccPlugin extends Plugin
 		if (event.getName().equals(Root.DRAY.getName()) && config.enableDray()) { return true; }
 		if (event.getName().equals(Root.CHURCH.getName()) && config.enableChurch()) { return true; }
 		if (event.getName().equals(Root.N_SEERS.getName()) && config.enableNSeers()) { return true; }
-		if (event.getName().equals(Root.S_SEERS.getName()) && config.enableSSeers()) { return true; }
-		if (event.getName().equals(Root.SEERS.getName()) && config.enableSeersBank()) { return true; }
+		if (event.getName().equals(Root.SEERS.getName()) && config.enableSeers()) { return true; }
 		if (event.getName().equals(Root.GLADE.getName()) && config.enableGlade()) { return true; }
 		if (event.getName().equals(Root.BEE.getName()) && config.enableBees()) { return true; }
 		if (event.getName().equals(Root.ZALC.getName()) && config.enableZalc()) { return true; }
@@ -177,6 +192,9 @@ public class ForestryccPlugin extends Plugin
 		if (event.getName().equals(Root.PRIF.getName()) && config.enablePrif()) { return true; }
 		if (event.getName().equals(Root.YAK.getName()) && config.enableYak()) { return true; }
 		if (event.getName().equals(Root.GEYEWS.getName()) && config.enableGE()) { return true; }
+		if (event.getName().equals(Root.RIMM.getName()) && config.enableRimm()) { return true; }
+		if (event.getName().equals(Root.LOOK.getName()) && config.enableLookout()) { return true; }
+		if (event.getName().equals(Root.WOOD.getName()) && config.enableWoodland()) { return true; }
 		return false;
 	}
 
@@ -198,53 +216,64 @@ public class ForestryccPlugin extends Plugin
 		death_timeouts.put(event.getName(), Instant.now());
 	}
 
-	private void displayTimer(Root event, String msg) {
-
-		if (event.isDead(msg)) {
-			// dead
-			if (active_roots.containsKey(event.getName())) {
-				long duration = Duration.between(active_roots.get(event.getName()), Instant.now()).toSeconds();
-				//log.info(event.getName() + " dead after " + duration + "sec");
-			} else {
-				//log.info(event.getName() + " dead." );
-			}
-			removeEvent(event);
-
-		} else if (event.isFake(msg)) {
-			// fake (dead)
-			//log.info(event.getName() + " fake.");
-			removeEvent(event);
-
-		} else if (event.isConfirmed(msg)) {
-			// confirmed
-			if (roots_confirmed.containsKey(event.getName())) {
-				Integer confirmations = roots_confirmed.get(event.getName());
-				roots_confirmed.put(event.getName(), confirmations+1);
-				updateTimerTooltip(event,event_duration,event.getName() + " +" + roots_confirmed.get(event.getName()).toString());
-				//log.info(event.getName() + " confirmed. +" + roots_confirmed.get(event.getName()).toString());
-			} else {
-				//log.info(event.getName() + " confirmed.");
-				if (validEvent(event)) {
-					newEvent(event);
-				}
-			}
-
+	private void timerDead(Root event, String msg) {
+		if (active_roots.containsKey(event.getName())) {
+			long duration = Duration.between(active_roots.get(event.getName()), Instant.now()).toSeconds();
+			log.info(event.getName() + " dead after " + duration + "sec");
 		} else {
-			// standard call
-			// check if recently dead
-			if (death_timeouts.containsKey(event.getName())) {
-				if (Duration.between(death_timeouts.get(event.getName()), Instant.now()).toSeconds() < death_timeout) {
-					//log.info(event.getName() + " recently died, ignoring call.");
-					return;
-				}
+			log.info(event.getName() + " dead: " + msg );
+		}
+		removeEvent(event);
+	}
+
+	private void timerFake(Root event, String msg) {
+		log.info(event.getName() + " fake: " + msg);
+		removeEvent(event);
+	}
+
+	private void timerNew(Root event, String msg) {
+		if (death_timeouts.containsKey(event.getName())) {
+			if (Duration.between(death_timeouts.get(event.getName()), Instant.now()).toSeconds() < death_timeout) {
+				log.info(event.getName() + " recently died, ignoring call: " + msg);
+				return;
 			}
-			//log.info(event.getName());
-			if (validEvent(event)) {
-				newEvent(event);
+		}
+		if (validEvent(event)) {
+			log.info(event.getName() + " confirmed: " + msg);
+			newEvent(event);
+		}
+	}
+
+	private void timerConfirm(Root event, String msg) {
+		Integer confirmations = roots_confirmed.get(event.getName());
+		roots_confirmed.put(event.getName(), confirmations+1);
+		updateTimerTooltip(event,event_duration,event.getName() + " +" + roots_confirmed.get(event.getName()).toString());
+		//log.info(event.getName() + " confirmed. +" + roots_confirmed.get(event.getName()).toString());
+	}
+
+	private void displayTimer(Root event, String msg) {
+		if (event.isFake(msg)) {
+			// fake
+			timerFake(event, msg);
+		} else if (event.isConfirmed(msg)) {
+			// confirm
+			if (roots_confirmed.containsKey(event.getName())) {
+				timerConfirm(event, msg);
+			} else {
+				timerNew(event, msg);
+			}
+		} else if (event.isDead(msg)) {
+			// dead
+			timerDead(event, msg);
+		} else {
+			// new / confirm
+			if (roots_confirmed.containsKey(event.getName())) {
+				timerConfirm(event, msg);
+			} else {
+				timerNew(event, msg);
 			}
 
 		}
-
 	}
 
 	@Provides
