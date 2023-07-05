@@ -150,9 +150,11 @@ public class ForestryccPlugin extends Plugin
 		if (active_roots.containsKey(event.getName())) {
 			infoBoxManager.removeIf(t -> t instanceof ForestryccTimer && ((ForestryccTimer) t).getEvent().equals(event.getName()));
 			long new_duration = duration - Duration.between(active_roots.get(event.getName()), Instant.now()).toSeconds();
-			ForestryccTimer timer = new ForestryccTimer(event.getName(), new_duration, image, this);
-			timer.setTooltip(event.getName());
-			infoBoxManager.addInfoBox(timer);
+			if (new_duration > 0) {
+				ForestryccTimer timer = new ForestryccTimer(event.getName(), new_duration, image, this);
+				timer.setTooltip(event.getName());
+				infoBoxManager.addInfoBox(timer);
+			}
 		}
 	}
 
