@@ -116,10 +116,8 @@ public class ForestryccPlugin extends Plugin
 	@Subscribe
 	public void onGameTick(GameTick tickEvent) {
 		if (client.getTickCount() % 5 == 0) {  // every 3 seconds roughly
-			for (String rootName : active_roots.keySet()) {
-				activeRootsRemoveExpired();
-				activeRootsExpirationWarning();
-			}
+			activeRootsRemoveExpired();
+			activeRootsExpirationWarning();
 		}
 	}
 
