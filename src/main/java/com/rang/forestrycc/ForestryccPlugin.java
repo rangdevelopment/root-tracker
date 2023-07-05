@@ -136,7 +136,8 @@ public class ForestryccPlugin extends Plugin
 	}
 
 	private void activeRootsRemoveExpired() {
-		for (String rootName : active_roots.keySet()) {
+		HashMap<String, Instant> active_roots_copy = active_roots;
+		for (String rootName : active_roots_copy.keySet()) {
 			// remove if expired
 			if (Duration.between(active_roots.get(rootName), Instant.now()).toSeconds() > event_duration) {
 				active_roots.remove(rootName);
