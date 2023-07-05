@@ -59,7 +59,7 @@ public interface ForestryccConfig extends Config
 			position = 1,
 			keyName = "enableNmage",
 			name = "North Sorcerer's Tower (Nmage)",
-			description = "North Sorcerer's Tower (Nmage). Use Combat bracelet teleport to ranging guild.",
+			description = "Use Combat bracelet teleport to ranging guild.",
 			section = locations
 	)
 	default boolean enableNmage()
@@ -71,7 +71,7 @@ public interface ForestryccConfig extends Config
 			position = 2,
 			keyName = "enableSmage",
 			name = "South Sorcerer's Tower (Smage)",
-			description = "South Sorcerer's Tower (Smage). Use Combat bracelet teleport to ranging guild.",
+			description = "Use Combat bracelet teleport to ranging guild.",
 			section = locations
 	)
 	default boolean enableSmage()
@@ -83,7 +83,7 @@ public interface ForestryccConfig extends Config
 			position = 3,
 			keyName = "enableDray",
 			name = "Draynor (Dray)",
-			description = "Draynor (Dray). Use Glory teleport.",
+			description = "Teleport with Glory.",
 			section = locations
 	)
 	default boolean enableDray()
@@ -95,7 +95,7 @@ public interface ForestryccConfig extends Config
 			position = 4,
 			keyName = "enableChurch",
 			name = "Seers Church (Church)",
-			description = "Seers Church (Church). Use Camelot teleport.",
+			description = "Use Camelot teleport.",
 			section = locations
 	)
 	default boolean enableChurch()
@@ -107,7 +107,7 @@ public interface ForestryccConfig extends Config
 			position = 5,
 			keyName = "enableNSeers",
 			name = "North Seers (N Seers)",
-			description = "North Seers (N Seers). Use Camelot teleport.",
+			description = "Seers Maples / Seers Willows. Use Camelot teleport.",
 			section = locations
 	)
 	default boolean enableNSeers()
@@ -117,33 +117,21 @@ public interface ForestryccConfig extends Config
 
 	@ConfigItem(
 			position = 6,
-			keyName = "enableSSeers",
-			name = "South Seers (S Seers)",
-			description = "South Seers (S Seers / Seers Oaks). Use Camelot teleport.",
+			keyName = "enableSeers",
+			name = "Seers (South/Bank)",
+			description = "Seers Bank / Seers Oaks / S Seers. Use Camelot teleport.",
 			section = locations
 	)
-	default boolean enableSSeers()
+	default boolean enableSeers()
 	{
 		return true;
 	}
 
 	@ConfigItem(
 			position = 7,
-			keyName = "enableSeersBank",
-			name = "Seers Bank (Seers)",
-			description = "Seers Bank (Seers). Use Camelot teleport.",
-			section = locations
-	)
-	default boolean enableSeersBank()
-	{
-		return true;
-	}
-
-	@ConfigItem(
-			position = 8,
 			keyName = "enableGlade",
 			name = "Xeric's Glade (Glade)",
-			description = "Xeric's Glade (Glade). Use Xeric's talisman option 2.",
+			description = "Teleport with Xeric's talisman option 2.",
 			section = locations
 	)
 	default boolean enableGlade()
@@ -152,10 +140,10 @@ public interface ForestryccConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 9,
+			position = 8,
 			keyName = "enableBees",
 			name = "Seers Bees (Bees)",
-			description = "Seers Bees (Bees). Use Camelot teleport.",
+			description = "Use Camelot teleport.",
 			section = locations
 	)
 	default boolean enableBees()
@@ -164,10 +152,10 @@ public interface ForestryccConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 10,
+			position = 9,
 			keyName = "enableZalc",
 			name = "Zalcano (Zalc)",
-			description = "Zalcano (Zalc). Located in Prifddinas, use Teleport crystal.",
+			description = "Located in Prifddinas, use Teleport crystal.",
 			section = locations
 	)
 	default boolean enableZalc()
@@ -176,10 +164,10 @@ public interface ForestryccConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 11,
+			position = 10,
 			keyName = "enableMyth",
 			name = "Myth's Guild (Myth)",
-			description = "Myth's Guild (Myth). Use mythical cape",
+			description = "Teleport with mythical cape",
 			section = locations
 	)
 	default boolean enableMyth()
@@ -188,10 +176,10 @@ public interface ForestryccConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 12,
+			position = 11,
 			keyName = "enableArc",
 			name = "Arceuus Magics (Arc)",
-			description = "Arceuus Magics (Arc). Use book of the dead, option 5. Also Kharedst's memoirs option 5.",
+			description = "Teleport with book of the dead, option 5. Also Kharedst's memoirs option 5.",
 			section = locations
 	)
 	default boolean enableArc()
@@ -200,10 +188,10 @@ public interface ForestryccConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 13,
+			position = 12,
 			keyName = "enablePrif",
 			name = "Prifddinas (Prif Teak/Prif Mahog)",
-			description = "Prifddinas (Prif Teak/Prif Mahog). Use Teleport crystal",
+			description = "Use Teleport crystal",
 			section = locations
 	)
 	default boolean enablePrif()
@@ -212,10 +200,10 @@ public interface ForestryccConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 14,
+			position = 13,
 			keyName = "enableYak",
 			name = "Neitiznot (Yak)",
-			description = "Neitiznot (Yak). Use enchanted lyre. ",
+			description = "Teleport with enchanted lyre. ",
 			section = locations
 	)
 	default boolean enableYak()
@@ -224,13 +212,49 @@ public interface ForestryccConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 15,
+			position = 14,
 			keyName = "enableGE",
 			name = "GE Yews",
-			description = "GE Yews. Teleport to GE... ",
+			description = "Teleport to Varrock or GE.",
 			section = locations
 	)
 	default boolean enableGE()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			position = 15,
+			keyName = "enableRimm",
+			name = "Rimmington (Rimm)",
+			description = "Teleport to House or Skills necklace.",
+			section = locations
+	)
+	default boolean enableRimm()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			position = 16,
+			keyName = "enableLookout",
+			name = "Xeric's Lookout (Lookout)",
+			description = "Teleport with Xeric's Talisman.",
+			section = locations
+	)
+	default boolean enableLookout()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			position = 17,
+			keyName = "enableWoodland",
+			name = "Kourend Woodland (Woodland)",
+			description = "Teleport with Rada's blessing.",
+			section = locations
+	)
+	default boolean enableWoodland()
 	{
 		return true;
 	}
