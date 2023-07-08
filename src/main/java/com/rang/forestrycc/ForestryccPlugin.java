@@ -47,6 +47,8 @@ public class ForestryccPlugin extends Plugin
 	private List<String> bee_filters = List.of("bees","bee","b");
 	private List<String> root_filters = List.of("roots","root","r");
 	private List<String> sap_filters = List.of("saps","sap");
+	private List<String> unsupported_chars = List.of(",","'","/","-","_","(",")");
+	private List<String> excessive_spaces = List.of("          ","         ","        ","       ","      ","     ","    ","   ","  ");
 	private long death_timeout = 6;
 	private long revive_timeout = 10;
 
@@ -116,6 +118,17 @@ public class ForestryccPlugin extends Plugin
 		return null;
 	}
 
+	private void clean_chat_msg() {
+		// remove unsupported characters
+		for (String c : unsupported_chars) {
+			chat_msg = chat_msg.replace(c,"");
+		}
+		// remove excessive spaces
+		for (String excessive_space : excessive_spaces) {
+			chat_msg = chat_msg.replace(excessive_space, " ");
+		}
+	}
+
 	@Subscribe
 	public void onChatMessage(ChatMessage chatMessage)
 	{
@@ -124,8 +137,9 @@ public class ForestryccPlugin extends Plugin
 
 			chat_msg_orignal = chatMessage.getMessage().toLowerCase();
 			chat_msg = chat_msg_orignal;
-			chat_msg.replace(",","");
-			chat_msg.replace("'","");
+
+			// clean chat msg
+			clean_chat_msg();
 
 			// classify event
 			String event_type = classifyEvent();
