@@ -145,7 +145,7 @@ public interface ForestryccConfig extends Config
 			position = 4,
 			keyName = "enableChurch",
 			name = "Seers Church (Church)",
-			description = "Use Camelot teleport.",
+			description = "Use Kandarin headgear 4 or Camelot teleport.",
 			section = locations
 	)
 	default boolean enableChurch()
@@ -193,7 +193,7 @@ public interface ForestryccConfig extends Config
 			position = 8,
 			keyName = "enableBees",
 			name = "Seers Hive (Hive)",
-			description = "Use Camelot teleport.",
+			description = "Use Kandarin headgear 4 or Camelot teleport.",
 			section = locations
 	)
 	default boolean enableBees()
@@ -205,7 +205,7 @@ public interface ForestryccConfig extends Config
 			position = 9,
 			keyName = "enableZalc",
 			name = "Zalcano (Zalc)",
-			description = "Located in Prifddinas, use Teleport crystal.",
+			description = "Located in Prifddinas, use Teleport crystal or Spirit tree.",
 			section = locations
 	)
 	default boolean enableZalc()
