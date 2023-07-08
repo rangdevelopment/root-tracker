@@ -91,7 +91,7 @@ public class ForestryccPlugin extends Plugin
 			return false;
 		}
 		// ignore questions, and attempt to pre-filter sentences
-		if (msg_text.contains("?") || msg_text.contains("\"") || msg_text.contains("=")) {
+		if (msg_text.contains("?") || msg_text.contains("\"") || msg_text.contains("=") || msg_text.contains("where")) {
 			return false;
 		}
 		return true;
@@ -229,7 +229,7 @@ public class ForestryccPlugin extends Plugin
 			deleteTimerUI(event);
 			// calc new duration
 			long new_duration = event_duration - Duration.between(events_starttime.get(event.getName()), Instant.now()).toSeconds();
-			if (new_duration < 0) { return; }
+			if (new_duration <= 0) { return; }
 			// create new timer
 			String tooltip = generateTooltip(event);
 			newTimerUI(event.getName(), new_duration, image, tooltip);
@@ -364,7 +364,7 @@ public class ForestryccPlugin extends Plugin
 	private void Dead(Location event) {
 		if (events_alive.contains(event.getName())) {
 			long duration = Duration.between(events_starttime.get(event.getName()), Instant.now()).toSeconds();
-			log.info(event.getName() + " dead after " + duration + "sec");
+			log.info(event.getName() + " dead after " + duration + "sec: " + chat_msg_orignal);
 		} else {
 			log.info(event.getName() + " dead: " + chat_msg_orignal );
 		}
