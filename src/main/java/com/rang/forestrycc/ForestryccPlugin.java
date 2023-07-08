@@ -325,9 +325,9 @@ public class ForestryccPlugin extends Plugin
 	private void Dead(Location event) {
 		if (events_alive.contains(event.getName())) {
 			long duration = Duration.between(events_starttime.get(event.getName()), Instant.now()).toSeconds();
-			log.info(event.getName() + " dead after " + duration + "sec");
+			//log.info(event.getName() + " dead after " + duration + "sec");
 		} else {
-			log.info(event.getName() + " dead: " + chat_msg_orignal );
+			//log.info(event.getName() + " dead: " + chat_msg_orignal );
 		}
 		removeEvent(event);
 	}
@@ -340,24 +340,24 @@ public class ForestryccPlugin extends Plugin
 		// check if event is within revive window
 		if (Duration.between(events_timeofdeath.get(event.getName()), Instant.now()).toSeconds() < revive_timeout) {
 			reviveEvent(event);
-			log.info(event.getName() + " attempt revive: " + chat_msg_orignal);
+			//log.info(event.getName() + " attempt revive: " + chat_msg_orignal);
 		}
 	}
 
 	private void Fake(Location event) {
-		log.info(event.getName() + " fake: " + chat_msg_orignal);
+		//log.info(event.getName() + " fake: " + chat_msg_orignal);
 		removeEvent(event);
 	}
 
 	private void New(Location event, String event_type) {
 		// check if recently died
 		if (Duration.between(events_timeofdeath.get(event.getName()), Instant.now()).toSeconds() < death_timeout) {
-			log.info(event.getName() + " recently died, ignoring call: " + chat_msg_orignal);
+			//log.info(event.getName() + " recently died, ignoring call: " + chat_msg_orignal);
 			return;
 		}
 		// create new event if valid
 		if (validEvent(event)) {
-			log.info(event.getName() + " new: " + chat_msg_orignal);
+			//log.info(event.getName() + " new: " + chat_msg_orignal);
 			newEvent(event, event_type);
 		}
 	}
@@ -365,7 +365,7 @@ public class ForestryccPlugin extends Plugin
 	private void Confirm(Location event) {
 		// confirm event if valid
 		if (validEvent(event)) {
-			log.info(event.getName() + " confirmed: " + chat_msg_orignal);
+			//log.info(event.getName() + " confirmed: " + chat_msg_orignal);
 			confirmEvent(event);
 		}
 	}
