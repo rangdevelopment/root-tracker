@@ -88,7 +88,6 @@ public class ForestryccPlugin extends Plugin
 		}
 		// ignore anything over 25 characters long
 		if (msg_text.length() > 25) {
-			//log.info(msg_text + " over limit: " + msg_text.length());
 			return false;
 		}
 		// ignore questions, and attempt to pre-filter sentences
@@ -176,6 +175,9 @@ public class ForestryccPlugin extends Plugin
 				displayTimer(event, event_type, chat_msg);
 			}
 
+			log.info(events_alive.toString());
+			log.info("");
+
 		}
 	}
 
@@ -189,14 +191,18 @@ public class ForestryccPlugin extends Plugin
 		}
 	}
 
+	private boolean activeRootsExpiringSoon(String locationName) {
+		return Duration.between(events_starttime.get(locationName), Instant.now()).toSeconds() > Long.valueOf(config.expirationWarningTime());
+	}
+
 	private void activeRootsExpirationWarning() {
 		if (!config.expirationWarning()) { return; }
-		for (String rootName : events_alive) {
+		for (String locationName : events_alive) {
 			// if 90 secs, it's probably too late (show tomato)
-			if (Duration.between(events_starttime.get(rootName), Instant.now()).toSeconds() > Long.valueOf(config.expirationWarningTime())) {
-				Location event = Location.findFromName(rootName);
+			if (activeRootsExpiringSoon(locationName)) {
+				Location event = Location.findFromName(locationName);
 				if (event != null) {
-					updateTimerImage(event, event_duration, itemManager.getImage(ItemID.TOMATO));
+					updateTimerImage(event, itemManager.getImage(ItemID.TOMATO));
 				}
 			}
 		}
@@ -209,24 +215,43 @@ public class ForestryccPlugin extends Plugin
 
 	// -------------------------------------------------------------------------- UPDATE TIMER
 
-	private void updateTimerImage(Location event, long duration, AsyncBufferedImage image) {
+	private void createTimer(Location event, long duration, String tooltip) {
+		newTimerUI(event.getName(), duration, itemManager.getImage(event.getItemSpriteId()), tooltip);
+	}
+
+	private void deleteTimer(Location event) {
+		deleteTimerUI(event);
+	}
+
+	private void updateTimerImage(Location event, AsyncBufferedImage image) {
 		if (events_alive.contains(event.getName())) {
+			// delete existing ui
 			deleteTimerUI(event);
-			long new_duration = duration - Duration.between(events_starttime.get(event.getName()), Instant.now()).toSeconds();
-			if (new_duration > 0) {
-				String tooltip = event.getName();
-				createTimerUI(event, new_duration, tooltip);
-			}
+			// calc new duration
+			long new_duration = event_duration - Duration.between(events_starttime.get(event.getName()), Instant.now()).toSeconds();
+			if (new_duration < 0) { return; }
+			// create new timer
+			String tooltip = generateTooltip(event);
+			newTimerUI(event.getName(), new_duration, image, tooltip);
 		}
 	}
 
-	private void updateTimerTooltip(Location event, long duration, String tooltip) {
+	private void updateTimerTooltip(Location event, String tooltip) {
 		if (events_alive.contains(event.getName())) {
+			// delete existing ui
 			deleteTimerUI(event);
-			long new_duration = duration - Duration.between(events_starttime.get(event.getName()), Instant.now()).toSeconds();
-			if (new_duration > 0) {
-				createTimerUI(event, new_duration, tooltip);
+			// calc new duration
+			long new_duration = event_duration - Duration.between(events_starttime.get(event.getName()), Instant.now()).toSeconds();
+			if (new_duration < 0) { return; }
+			// determine correct image
+			AsyncBufferedImage image = null;
+			if (config.expirationWarning() && activeRootsExpiringSoon(event.getName())) {
+				image = itemManager.getImage(ItemID.TOMATO);
+			} else {
+				image =itemManager.getImage(event.getItemSpriteId());
 			}
+			// create new timer
+			newTimerUI(event.getName(), new_duration, image, tooltip);
 		}
 	}
 
@@ -236,9 +261,8 @@ public class ForestryccPlugin extends Plugin
 		infoBoxManager.removeIf(t -> t instanceof ForestryccTimer && ((ForestryccTimer) t).getEvent().equals(event.getName()));
 	}
 
-
-	private void createTimerUI(Location event, long duration, String tooltip) {
-		ForestryccTimer timer = new ForestryccTimer(event.getName(), duration, itemManager.getImage(event.getItemSpriteId()), this);
+	private void newTimerUI(String name, long duration, AsyncBufferedImage image, String tooltip) {
+		ForestryccTimer timer = new ForestryccTimer(name, duration, image, this);
 		timer.setTooltip(tooltip);
 		infoBoxManager.addInfoBox(timer);
 	}
@@ -269,7 +293,12 @@ public class ForestryccPlugin extends Plugin
 
 	// -------------------------------------------------------------------------- FORMATTING
 
-	private String generateTooltip(Location event, String event_type, Integer confirmations)
+	private String generateTooltip(Location event)
+	{
+		return formatTooltip(event, events_type.get(event.getName()), events_confirmed.get(event.getName()));
+	}
+
+	private String formatTooltip(Location event, String event_type, Integer confirmations)
 	{
 		String tooltip = event.getName();
 		// event
@@ -286,47 +315,43 @@ public class ForestryccPlugin extends Plugin
 	// -------------------------------------------------------------------------- EVENTS
 
 	private void newEvent(Location event, String event_type) {
-		// remove any active event timer
-		deleteTimerUI(event);
-		// create tooltip
-		String tooltip = generateTooltip(event, event_type, null);
-		// create timer
-		createTimerUI(event, event_duration, tooltip);
-		// update Lists
+		// update lists
 		events_alive.add(event.getName());
 		events_confirmed.put(event.getName(), 0);
 		events_starttime.put(event.getName(),Instant.now());
-		if (events_type.get(event.getName()) == null) {
-			events_type.put(event.getName(),event_type);
-		}
+		events_type.putIfAbsent(event.getName(),event_type);
+		// remove any active event timer
+		deleteTimer(event);
+		// create timer
+		String tooltip = generateTooltip(event);
+		createTimer(event, event_duration, tooltip);
 	}
 
 	private void reviveEvent(Location event) {
-		// remove any active event timer
-		deleteTimerUI(event);
+		// make alive again
+		events_alive.add(event.getName());
 		// create tooltip
-		String tooltip = generateTooltip(event, events_type.get(event.getName()), null);
+		String tooltip = generateTooltip(event);
 		tooltip = tooltip + " *revived";
 		// create timer
-		long remaining_duration = event_duration - Duration.between(events_starttime.get(event.getName()), Instant.now()).toSeconds();
-		createTimerUI(event, remaining_duration, tooltip);
-		// update Lists
-		events_alive.add(event.getName());
+		updateTimerTooltip(event, tooltip);  // update timer will create a newUI and automatically calc duration
 	}
 
-	private void confirmEvent(Location event) {
+	private void confirmEvent(Location event, String event_type) {
+		// update lists
+		events_type.putIfAbsent(event.getName(),event_type);
 		// update total confirmations
 		Integer confirmations = events_confirmed.get(event.getName());
 		events_confirmed.put(event.getName(), confirmations+1);
 		// set tooltip
-		String tooltip = generateTooltip(event, events_type.get(event.getName()), events_confirmed.get(event.getName()));
+		String tooltip = generateTooltip(event);
 		// update timer
-		updateTimerTooltip(event, event_duration, tooltip);
+		updateTimerTooltip(event, tooltip);
 	}
 
 	private void removeEvent(Location event) {
 		// remove active event timers
-		deleteTimerUI(event);
+		deleteTimer(event);
 		// update Lists
 		events_alive.remove(event.getName());
 		events_confirmed.remove(event.getName());
@@ -339,9 +364,9 @@ public class ForestryccPlugin extends Plugin
 	private void Dead(Location event) {
 		if (events_alive.contains(event.getName())) {
 			long duration = Duration.between(events_starttime.get(event.getName()), Instant.now()).toSeconds();
-			//log.info(event.getName() + " dead after " + duration + "sec");
+			log.info(event.getName() + " dead after " + duration + "sec");
 		} else {
-			//log.info(event.getName() + " dead: " + chat_msg_orignal );
+			log.info(event.getName() + " dead: " + chat_msg_orignal );
 		}
 		removeEvent(event);
 	}
@@ -354,33 +379,33 @@ public class ForestryccPlugin extends Plugin
 		// check if event is within revive window
 		if (Duration.between(events_timeofdeath.get(event.getName()), Instant.now()).toSeconds() < revive_timeout) {
 			reviveEvent(event);
-			//log.info(event.getName() + " attempt revive: " + chat_msg_orignal);
+			log.info(event.getName() + " attempt revive: " + chat_msg_orignal);
 		}
 	}
 
 	private void Fake(Location event) {
-		//log.info(event.getName() + " fake: " + chat_msg_orignal);
+		log.info(event.getName() + " fake: " + chat_msg_orignal);
 		removeEvent(event);
 	}
 
 	private void New(Location event, String event_type) {
 		// check if recently died
 		if (Duration.between(events_timeofdeath.get(event.getName()), Instant.now()).toSeconds() < death_timeout) {
-			//log.info(event.getName() + " recently died, ignoring call: " + chat_msg_orignal);
+			log.info(event.getName() + " recently died, ignoring call: " + chat_msg_orignal);
 			return;
 		}
 		// create new event if valid
 		if (validEvent(event)) {
-			//log.info(event.getName() + " new: " + chat_msg_orignal);
+			log.info(event.getName() + " new: " + chat_msg_orignal);
 			newEvent(event, event_type);
 		}
 	}
 
-	private void Confirm(Location event) {
+	private void Confirm(Location event, String event_type) {
 		// confirm event if valid
 		if (validEvent(event)) {
-			//log.info(event.getName() + " confirmed: " + chat_msg_orignal);
-			confirmEvent(event);
+			log.info(event.getName() + " confirmed: " + chat_msg_orignal);
+			confirmEvent(event, event_type);
 		}
 	}
 
@@ -400,8 +425,8 @@ public class ForestryccPlugin extends Plugin
 
 		} else if (event.isConfirmed(msg)) {
 			// confirm
-			if (events_confirmed.containsKey(event.getName())) {
-				Confirm(event);
+			if (events_alive.contains(event.getName()) && events_confirmed.containsKey(event.getName())) {
+				Confirm(event, event_type);
 			} else {
 				New(event, event_type);
 			}
@@ -412,8 +437,8 @@ public class ForestryccPlugin extends Plugin
 
 		} else {
 			// new / confirm
-			if (events_confirmed.containsKey(event.getName())) {
-				Confirm(event);
+			if (events_alive.contains(event.getName()) && events_confirmed.containsKey(event.getName())) {
+				Confirm(event, event_type);
 			} else {
 				New(event, event_type);
 			}
