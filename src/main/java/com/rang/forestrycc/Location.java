@@ -38,7 +38,7 @@ enum Location {
 	SMAGE("South Sorcerer's Tower (Smage)", List.of("smage","s mage","south mage"), null, false, false, ItemID.CAPE_OF_LEGENDS),
 	DRAY("Draynor (Dray)", List.of("draynor","dray"),null, false, false, ItemID.WILLOW_LOGS),
 	CHURCH("Seers Church (Church)", List.of("church","churc","curch","churh","chrch","chuch"),null, false, false, ItemID.HOLY_SYMBOL),
-	N_SEERS("North Seers (NSeers)", List.of("north seers", "north seer", "n seers","nseers","n seer","nseer"), List.of("bank","south","s "), false, true, ItemID.MAPLE_LOGS),
+	N_SEERS("North Seers (NSeers)", List.of("north seers", "north seer", "n seers","nseers","n seer","nseer"), List.of("bank","south","s"), false, true, ItemID.MAPLE_LOGS),
 	SEERS("Seers (S Seers/Seers Bank)", List.of("seer oaks","seers oaks", "seer oak", "seers oak","seers bank", "seer bank", "s seers","sseers","s seer","sseer", "seers", "seer"),List.of("n","north","nseers"), false, true, ItemID.CAMELOT_TELEPORT),
 	GLADE("Xeric's Glade (Glade)", List.of("glade"),null, false, false, ItemID.XERICS_TALISMAN),
 	BEE("Seers Beehives (Hive)", List.of("hive"),null, false, false, ItemID.BEE_ON_A_STICK),
