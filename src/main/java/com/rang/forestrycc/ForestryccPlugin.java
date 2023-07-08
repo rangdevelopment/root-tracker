@@ -92,7 +92,7 @@ public class ForestryccPlugin extends Plugin
 			return false;
 		}
 		// ignore questions, and attempt to pre-filter sentences
-		if (msg_text.contains("?") || msg_text.contains("\"")) {
+		if (msg_text.contains("?") || msg_text.contains("\"") || msg_text.contains("=")) {
 			return false;
 		}
 		return true;

@@ -41,7 +41,7 @@ enum Location {
 	N_SEERS("North Seers (NSeers)", List.of("north seers", "north seer", "n seers","nseers","n seer","nseer"), List.of("bank","south","s"), false, true, ItemID.MAPLE_LOGS),
 	SEERS("Seers (S Seers/Seers Bank)", List.of("seer oaks","seers oaks", "seer oak", "seers oak","seers bank", "seer bank", "s seers","sseers","s seer","sseer", "seers", "seer"),List.of("n","north","nseers"), false, true, ItemID.CAMELOT_TELEPORT),
 	GLADE("Xeric's Glade (Glade)", List.of("glade"),null, false, false, ItemID.XERICS_TALISMAN),
-	BEE("Seers Beehives (Hive)", List.of("hive"),null, false, false, ItemID.BEE_ON_A_STICK),
+	BEE("Seers Beehives (Hive)", List.of("hives","hive"),null, false, false, ItemID.BEE_ON_A_STICK),
 	ZALC("Zalcano (Zalc)", List.of("zalc"),null, false, false, ItemID.ZALCANO_SHARD),
 	MYTH("Myth's Guild (Myth)", List.of("myths","myth"),null, false, false, ItemID.MYTHICAL_CAPE_22114),
 	ARC("Arceuus Magics (Arc)", List.of("arc"),null, false, false, ItemID.BOOK_OF_THE_DEAD),
