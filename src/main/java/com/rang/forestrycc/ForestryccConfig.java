@@ -21,7 +21,19 @@ public interface ForestryccConfig extends Config
 	String generalSettings = "generalSettings";
 
 	@ConfigItem(
-		position = 1,
+			position = 1,
+			keyName = "allowRevives",
+			name = "Allow Revive",
+			description = "Someone may call an event fake/dead when it's still alive. Type \"Dray not dead\", \"Dray still up\", or \"Dray alive\" within 10 seconds to revive the timer.",
+			section = generalSettings
+	)
+	default boolean allowRevives()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 2,
 		keyName = "expirationWarning",
 		name = "Expiration Warning",
 		description = "Display a tomato when an event is close to expiring.",
@@ -37,7 +49,7 @@ public interface ForestryccConfig extends Config
 			max = 119
 	)
 	@ConfigItem(
-			position = 2,
+			position = 3,
 			keyName = "expirationWarningTime",
 			name = "Warn after (sec)",
 			description = "Display a tomato at X seconds after an event started.",
@@ -49,9 +61,9 @@ public interface ForestryccConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 3,
+			position = 4,
 			keyName = "rootsEnabled",
-			name = "Enable Roots",
+			name = "Enable Roots (root/r)",
 			description = "Disable to hide root events when possible.",
 			section = generalSettings
 	)
@@ -61,9 +73,9 @@ public interface ForestryccConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 4,
+			position = 5,
 			keyName = "sapsEnabled",
-			name = "Enable Saplings",
+			name = "Enable Saplings (sap)",
 			description = "Disable to hide sapling events when possible.",
 			section = generalSettings
 	)
@@ -73,25 +85,13 @@ public interface ForestryccConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 5,
+			position = 6,
 			keyName = "BeesEnabled",
-			name = "Enable Bees",
+			name = "Enable Bees (bees/b)",
 			description = "Disable to hide bee events when possible.",
 			section = generalSettings
 	)
-	default boolean BeesEnabled()
-	{
-		return true;
-	}
-
-	@ConfigItem(
-			position = 6,
-			keyName = "allowRevives",
-			name = "Allow Revive",
-			description = "Sometimes people call an event fake/dead when it's still alive. This will allow people in CC to type \"not dead\", \"still up\", or \"alive\" to revive the timer.",
-			section = generalSettings
-	)
-	default boolean allowRevives()
+	default boolean beesEnabled()
 	{
 		return true;
 	}

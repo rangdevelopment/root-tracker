@@ -145,7 +145,7 @@ public class ForestryccPlugin extends Plugin
 			String event_type = classifyEvent();
 			if (event_type != null) {
 				// check if enabled
-				if (event_type.equals("BEES") && !config.enableBees()) { return; } // exit
+				if (event_type.equals("BEES") && !config.beesEnabled()) { return; } // exit
 				if (event_type.equals("SAP") && !config.sapsEnabled()) { return; } // exit
 				if (event_type.equals("ROOTS") && !config.rootsEnabled()) { return; } // exit
 				// filter from messages
