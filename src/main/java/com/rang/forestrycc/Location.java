@@ -139,7 +139,7 @@ enum Location {
 	}
 
 	public boolean isRevive(String msg) {
-		String[] confirmed_strings = {"not dead","alive","still here","not d","still up","real"};
+		String[] confirmed_strings = {"not dead","alive","still here","not d","still up","still going","real","still","stil"};
 		for (String value : confirmed_strings) {
 			if (msg.contains(value)) { return true; }
 		}

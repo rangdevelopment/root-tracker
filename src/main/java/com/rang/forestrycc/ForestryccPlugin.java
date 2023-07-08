@@ -46,7 +46,8 @@ public class ForestryccPlugin extends Plugin
 	private HashMap<String, String> events_type = new HashMap<String, String>();
 	private List<String> bee_filters = List.of("bees","bee","b");
 	private List<String> root_filters = List.of("roots","root","r");
-	private List<String> sap_filters = List.of("saps","sap");
+	private List<String> sap_filters = List.of("sapling","saps","sap");
+	private List<String> banned_words = List.of("?","\"","=","where","wher","wehre","were","what","waht","wat","wht");
 	private List<String> unsupported_chars = List.of(",","'","/","-","_","(",")");
 	private List<String> excessive_spaces = List.of("          ","         ","        ","       ","      ","     ","    ","   ","  ");
 	private long death_timeout = 6;
@@ -91,8 +92,8 @@ public class ForestryccPlugin extends Plugin
 			return false;
 		}
 		// ignore questions, and attempt to pre-filter sentences
-		if (msg_text.contains("?") || msg_text.contains("\"") || msg_text.contains("=") || msg_text.contains("where")) {
-			return false;
+		for (String banned : banned_words) {
+			if (msg_text.contains(banned)) { return false; }
 		}
 		return true;
 	}
@@ -152,6 +153,7 @@ public class ForestryccPlugin extends Plugin
 					chat_msg = chat_msg.replace("bee", "");
 					chat_msg = chat_msg.replace("bees", "");
 				} else if (event_type.equals("SAP")) {
+					chat_msg = chat_msg.replace("sapling", "");
 					chat_msg = chat_msg.replace("saps", "");
 					chat_msg = chat_msg.replace("sap", "");
 					chat_msg = chat_msg.replace("mulch", "");
