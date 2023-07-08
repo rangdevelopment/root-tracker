@@ -11,6 +11,8 @@ public interface ForestryccConfig extends Config
 {
 	String GROUP = "forestrycc";
 
+	// ----------------------------------------------------- GENERAL
+
 	@ConfigSection(
 			name = "General",
 			description = "General settings",
@@ -19,7 +21,19 @@ public interface ForestryccConfig extends Config
 	String generalSettings = "generalSettings";
 
 	@ConfigItem(
-		position = 1,
+			position = 1,
+			keyName = "allowRevives",
+			name = "Allow Revive",
+			description = "Someone may call an event fake/dead when it's still alive. Type \"Dray not dead\", \"Dray still up\", or \"Dray alive\" within 10 seconds to revive the timer.",
+			section = generalSettings
+	)
+	default boolean allowRevives()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 2,
 		keyName = "expirationWarning",
 		name = "Expiration Warning",
 		description = "Display a tomato when an event is close to expiring.",
@@ -35,7 +49,7 @@ public interface ForestryccConfig extends Config
 			max = 119
 	)
 	@ConfigItem(
-			position = 2,
+			position = 3,
 			keyName = "expirationWarningTime",
 			name = "Warn after (sec)",
 			description = "Display a tomato at X seconds after an event started.",
@@ -46,7 +60,43 @@ public interface ForestryccConfig extends Config
 		return 90;
 	}
 
+	@ConfigItem(
+			position = 4,
+			keyName = "rootsEnabled",
+			name = "Enable Roots (root/r)",
+			description = "Disable to hide root events when possible.",
+			section = generalSettings
+	)
+	default boolean rootsEnabled()
+	{
+		return true;
+	}
 
+	@ConfigItem(
+			position = 5,
+			keyName = "sapsEnabled",
+			name = "Enable Saplings (sap)",
+			description = "Disable to hide sapling events when possible.",
+			section = generalSettings
+	)
+	default boolean sapsEnabled()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			position = 6,
+			keyName = "BeesEnabled",
+			name = "Enable Bees (bees/b)",
+			description = "Disable to hide bee events when possible.",
+			section = generalSettings
+	)
+	default boolean beesEnabled()
+	{
+		return true;
+	}
+
+	// ----------------------------------------------------- LOCATIONS
 
 	@ConfigSection(
 			name = "Locations",
@@ -59,7 +109,7 @@ public interface ForestryccConfig extends Config
 			position = 1,
 			keyName = "enableNmage",
 			name = "North Sorcerer's Tower (Nmage)",
-			description = "Use Combat bracelet teleport to ranging guild.",
+			description = "Use Kandarin headgear 4 or Combat bracelet teleport to ranging guild.",
 			section = locations
 	)
 	default boolean enableNmage()
@@ -71,7 +121,7 @@ public interface ForestryccConfig extends Config
 			position = 2,
 			keyName = "enableSmage",
 			name = "South Sorcerer's Tower (Smage)",
-			description = "Use Combat bracelet teleport to ranging guild.",
+			description = "Use Kandarin headgear 4 or Combat bracelet teleport to ranging guild.",
 			section = locations
 	)
 	default boolean enableSmage()
@@ -95,7 +145,7 @@ public interface ForestryccConfig extends Config
 			position = 4,
 			keyName = "enableChurch",
 			name = "Seers Church (Church)",
-			description = "Use Camelot teleport.",
+			description = "Use Kandarin headgear 4 or Camelot teleport.",
 			section = locations
 	)
 	default boolean enableChurch()
@@ -142,8 +192,8 @@ public interface ForestryccConfig extends Config
 	@ConfigItem(
 			position = 8,
 			keyName = "enableBees",
-			name = "Seers Bees (Bees)",
-			description = "Use Camelot teleport.",
+			name = "Seers Hive (Hive)",
+			description = "Use Kandarin headgear 4 or Camelot teleport.",
 			section = locations
 	)
 	default boolean enableBees()
@@ -155,7 +205,7 @@ public interface ForestryccConfig extends Config
 			position = 9,
 			keyName = "enableZalc",
 			name = "Zalcano (Zalc)",
-			description = "Located in Prifddinas, use Teleport crystal.",
+			description = "Located in Prifddinas, use Teleport crystal or Spirit tree.",
 			section = locations
 	)
 	default boolean enableZalc()
@@ -255,6 +305,18 @@ public interface ForestryccConfig extends Config
 			section = locations
 	)
 	default boolean enableWoodland()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			position = 18,
+			keyName = "enableOutpost",
+			name = "Barbarian Outpost (Barb)",
+			description = "Teleport with games necklace.",
+			section = locations
+	)
+	default boolean enableOutpost()
 	{
 		return true;
 	}
