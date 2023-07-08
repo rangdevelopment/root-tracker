@@ -11,6 +11,8 @@ public interface ForestryccConfig extends Config
 {
 	String GROUP = "forestrycc";
 
+	// ----------------------------------------------------- GENERAL
+
 	@ConfigSection(
 			name = "General",
 			description = "General settings",
@@ -46,7 +48,55 @@ public interface ForestryccConfig extends Config
 		return 90;
 	}
 
+	@ConfigItem(
+			position = 3,
+			keyName = "rootsEnabled",
+			name = "Enable Roots",
+			description = "Disable to hide root events when possible.",
+			section = generalSettings
+	)
+	default boolean rootsEnabled()
+	{
+		return true;
+	}
 
+	@ConfigItem(
+			position = 4,
+			keyName = "sapsEnabled",
+			name = "Enable Saplings",
+			description = "Disable to hide sapling events when possible.",
+			section = generalSettings
+	)
+	default boolean sapsEnabled()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			position = 5,
+			keyName = "BeesEnabled",
+			name = "Enable Bees",
+			description = "Disable to hide bee events when possible.",
+			section = generalSettings
+	)
+	default boolean BeesEnabled()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			position = 6,
+			keyName = "allowRevives",
+			name = "Allow Revive",
+			description = "Sometimes people call an event fake/dead when it's still alive. This will allow people in CC to type \"not dead\", \"still up\", or \"alive\" to revive the timer.",
+			section = generalSettings
+	)
+	default boolean allowRevives()
+	{
+		return true;
+	}
+
+	// ----------------------------------------------------- LOCATIONS
 
 	@ConfigSection(
 			name = "Locations",
@@ -59,7 +109,7 @@ public interface ForestryccConfig extends Config
 			position = 1,
 			keyName = "enableNmage",
 			name = "North Sorcerer's Tower (Nmage)",
-			description = "Use Combat bracelet teleport to ranging guild.",
+			description = "Use Kandarin headgear 4 or Combat bracelet teleport to ranging guild.",
 			section = locations
 	)
 	default boolean enableNmage()
@@ -71,7 +121,7 @@ public interface ForestryccConfig extends Config
 			position = 2,
 			keyName = "enableSmage",
 			name = "South Sorcerer's Tower (Smage)",
-			description = "Use Combat bracelet teleport to ranging guild.",
+			description = "Use Kandarin headgear 4 or Combat bracelet teleport to ranging guild.",
 			section = locations
 	)
 	default boolean enableSmage()
@@ -142,7 +192,7 @@ public interface ForestryccConfig extends Config
 	@ConfigItem(
 			position = 8,
 			keyName = "enableBees",
-			name = "Seers Bees (Bees)",
+			name = "Seers Hive (Hive)",
 			description = "Use Camelot teleport.",
 			section = locations
 	)
@@ -255,6 +305,18 @@ public interface ForestryccConfig extends Config
 			section = locations
 	)
 	default boolean enableWoodland()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			position = 18,
+			keyName = "enableOutpost",
+			name = "Barbarian Outpost (Barb)",
+			description = "Teleport with games necklace.",
+			section = locations
+	)
+	default boolean enableOutpost()
 	{
 		return true;
 	}
