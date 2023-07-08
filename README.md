@@ -9,10 +9,10 @@ Can work in other channels.
 - Optional support for all events (Roots, Saps, or Bees)
 - Timer that estimates the end of an event (120 seconds)
 - Silent adjustable warning before an event is likely to end so you don't waste time teleporting
-- Disable locations you don't have access to
+- Ability to disable locations you don't want / don't have access to
 - Displays state of multiple locations at once
 - Stackable confirmations of a location
-- Revive timers that ended early or accidentally
+- Revive timers that ended early or accidentally killed
 
 # Locations
 - North Sorcerer's Tower (Nmage)
@@ -49,15 +49,19 @@ Can work in other channels.
 - Confirm: Dray c, Dray conf, Dray con (and more)
 - Dead: Dray d, Dray dead, Dray rip, Dray clear (and more)
 - Fake: Dray fake
-- Revive: Dray not dead, Dray alive, Dray still up (and more)
+- Revive: Dray not dead, Dray alive, Dray still up, Dray still going (and more)
 
 # Change log
 
 7/8/2023
 - added 4 new locations (Rimm, Lookout, Woodland, Barb)
 - improve event matching routine for more accurate timers, less false positives.
-- add support for bees, saps, and roots (previously bees and saps callouts were disabled)
-- add toggle for revives.
+- add support for bees, saps, and roots (previously saps were disabled)
+- Ability to revive false dead calls (with toggle)
+- improve filtering of questions & conversations in CC
+- banned characters: ? " =
+- update teleport recommendations
+- better matching for misspelled words
 
 7/7/2023
 - forestry cc is born
