@@ -90,7 +90,7 @@ public class ForestryccPlugin extends Plugin
 			return false;
 		}
 		// ignore questions, and attempt to pre-filter sentences
-		if (msg_text.contains("?") || msg_text.contains(",") || msg_text.contains("'") || msg_text.contains("\"")) {
+		if (msg_text.contains("?") || msg_text.contains("\"")) {
 			return false;
 		}
 		return true;
@@ -124,6 +124,8 @@ public class ForestryccPlugin extends Plugin
 
 			chat_msg_orignal = chatMessage.getMessage().toLowerCase();
 			chat_msg = chat_msg_orignal;
+			chat_msg.replace(",","");
+			chat_msg.replace("'","");
 
 			// classify event
 			String event_type = classifyEvent();
