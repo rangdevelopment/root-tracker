@@ -6,13 +6,13 @@ Currently modeled on calls from the "Roots cc" channel.
 Can work in other channels.
 
 # Features!
+- Optional support for all events (Roots, Saps, or Bees)
 - Timer that estimates the end of an event (120 seconds)
 - Silent adjustable warning before an event is likely to end so you don't waste time teleporting
 - Disable locations you don't have access to
 - Displays state of multiple locations at once
 - Stackable confirmations of a location
-- Roots, Saps, or Bees
-- Revive timers that ended early / accidentally
+- Revive timers that ended early or accidentally
 
 # Locations
 - North Sorcerer's Tower (Nmage)
@@ -56,7 +56,7 @@ Can work in other channels.
 7/8/2023
 - added 4 new locations (Rimm, Lookout, Woodland, Barb)
 - improve event matching routine for more accurate timers, less false positives.
-- add support for bees, saps, and roots.
+- add support for bees, saps, and roots (previously bees and saps callouts were disabled)
 - add toggle for revives.
 
 7/7/2023
