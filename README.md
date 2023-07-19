@@ -13,6 +13,7 @@ Can work in other channels.
 - Displays state of multiple locations at once
 - Stackable confirmations of a location
 - Revive timers that ended early or accidentally killed
+- Idle notifications for maximum AFK
 
 # Locations
 - North Sorcerer's Tower (Nmage)
@@ -53,7 +54,8 @@ Can work in other channels.
 
 # Change log
 
-7/17/2023
+7/19/2023
+- add idle notifications
 - fix bee event timer (now 3min)
 - fix bug where events do not end correctly
 - change how the warming setting works
