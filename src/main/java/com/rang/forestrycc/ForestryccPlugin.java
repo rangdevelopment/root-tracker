@@ -15,10 +15,10 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.ui.overlay.infobox.InfoBox;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.api.events.*;
 import net.runelite.client.util.AsyncBufferedImage;
+import net.runelite.client.Notifier;
 
 
 @Slf4j
@@ -35,6 +35,9 @@ public class ForestryccPlugin extends Plugin
 
 	@Inject
 	private Client client;
+
+	@Inject
+	private Notifier notifier;
 
 	@Inject
 	private ForestryccConfig config;
@@ -444,6 +447,23 @@ public class ForestryccPlugin extends Plugin
 
 	// -------------------------------------------------------------------------- CREATE TIMER
 
+	private void NotifyNew(Location event, String event_type) {
+		// exit if disabled
+		if (!config.idleNotificationEnabled()) {
+			return;
+		}
+		// notify
+		if (validEvent(event)) {
+			if (event_type == null) {
+				notifier.notify("New forestry cc event!");
+			} else {
+				notifier.notify("New forestry cc " + event_type.toLowerCase() + " event!");
+			}
+		}
+	}
+
+	// -------------------------------------------------------------------------- CREATE TIMER
+
 	private void displayTimer(Location event, String event_type, String msg) {
 
 		if (event.isRevive(msg)) {
@@ -462,6 +482,7 @@ public class ForestryccPlugin extends Plugin
 				Confirm(event, event_type);
 			} else {
 				New(event, event_type);
+				NotifyNew(event, event_type);
 			}
 
 		} else if (event.isDead(msg)) {
@@ -474,6 +495,7 @@ public class ForestryccPlugin extends Plugin
 				Confirm(event, event_type);
 			} else {
 				New(event, event_type);
+				NotifyNew(event, event_type);
 			}
 
 		}

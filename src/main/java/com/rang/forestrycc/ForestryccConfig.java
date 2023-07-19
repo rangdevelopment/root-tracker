@@ -96,6 +96,18 @@ public interface ForestryccConfig extends Config
 		return true;
 	}
 
+	@ConfigItem(
+			position = 7,
+			keyName = "idleNotificationEnabled",
+			name = "Enable idle notifications",
+			description = "Turn on for notifications of new CC events when idle. Filter notifications using the event toggles above.",
+			section = generalSettings
+	)
+	default boolean idleNotificationEnabled()
+	{
+		return false;
+	}
+
 	// ----------------------------------------------------- LOCATIONS
 
 	@ConfigSection(
