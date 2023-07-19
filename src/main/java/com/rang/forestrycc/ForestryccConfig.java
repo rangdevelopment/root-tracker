@@ -50,14 +50,14 @@ public interface ForestryccConfig extends Config
 	)
 	@ConfigItem(
 			position = 3,
-			keyName = "expirationWarningTime",
-			name = "Warn after (sec)",
-			description = "Display a tomato at X seconds after an event started.",
+			keyName = "expirationWarnTime",
+			name = "Warning (sec)",
+			description = "Display a tomato X seconds before an event ends.",
 			section = generalSettings
 	)
-	default int expirationWarningTime()
+	default int expirationWarnTime()
 	{
-		return 90;
+		return 30;
 	}
 
 	@ConfigItem(
@@ -94,6 +94,18 @@ public interface ForestryccConfig extends Config
 	default boolean beesEnabled()
 	{
 		return true;
+	}
+
+	@ConfigItem(
+			position = 7,
+			keyName = "idleNotificationEnabled",
+			name = "Enable idle notifications",
+			description = "Turn on for notifications of new CC events when idle. Filter notifications using the event toggles above.",
+			section = generalSettings
+	)
+	default boolean idleNotificationEnabled()
+	{
+		return false;
 	}
 
 	// ----------------------------------------------------- LOCATIONS

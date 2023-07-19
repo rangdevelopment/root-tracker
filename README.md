@@ -7,12 +7,13 @@ Can work in other channels.
 
 # Features!
 - Optional support for all events (Roots, Saps, or Bees)
-- Timer that estimates the end of an event (120 seconds)
+- Timer that estimates the end of an event (120-180 seconds)
 - Silent adjustable warning before an event is likely to end so you don't waste time teleporting
 - Ability to disable locations you don't want / don't have access to
 - Displays state of multiple locations at once
 - Stackable confirmations of a location
 - Revive timers that ended early or accidentally killed
+- Idle notifications for maximum AFK
 
 # Locations
 - North Sorcerer's Tower (Nmage)
@@ -52,6 +53,13 @@ Can work in other channels.
 - Revive: Dray not dead, Dray alive, Dray still up, Dray still going (and more)
 
 # Change log
+
+7/19/2023
+- add idle notifications
+- fix bee event timer (now 3min)
+- fix bug where events do not end correctly
+- change how the warming setting works
+- add "arctic pines" to call options for yaks
 
 7/8/2023
 - added 4 new locations (Rimm, Lookout, Woodland, Barb)

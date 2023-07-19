@@ -18,6 +18,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.api.events.*;
 import net.runelite.client.util.AsyncBufferedImage;
+import net.runelite.client.Notifier;
 
 
 @Slf4j
@@ -36,9 +37,13 @@ public class ForestryccPlugin extends Plugin
 	private Client client;
 
 	@Inject
+	private Notifier notifier;
+
+	@Inject
 	private ForestryccConfig config;
 
-	private long event_duration = 120;
+	private long event_duration_default = 120;
+	private long event_duration_bees = 180;
 	private List<String> events_alive = new ArrayList<String>();
 	private HashMap<String, Instant> events_starttime = new HashMap<String, Instant>();
 	private HashMap<String, Instant> events_timeofdeath = new HashMap<String, Instant>();
@@ -194,13 +199,17 @@ public class ForestryccPlugin extends Plugin
 	}
 
 	private boolean activeRootsExpiringSoon(String locationName) {
-		return Duration.between(events_starttime.get(locationName), Instant.now()).toSeconds() > Long.valueOf(config.expirationWarningTime());
+		// event duration
+		long duration = eventDuration(events_type.get(locationName));
+		// check if event is expiring
+		long event_alive_for = Duration.between(events_starttime.get(locationName), Instant.now()).toSeconds();
+		return duration - event_alive_for < Long.valueOf(config.expirationWarnTime());
 	}
 
 	private void activeRootsExpirationWarning() {
 		if (!config.expirationWarning()) { return; }
 		for (String locationName : events_alive) {
-			// if 90 secs, it's probably too late (show tomato)
+			// if too late, show tomato
 			if (activeRootsExpiringSoon(locationName)) {
 				Location event = Location.findFromName(locationName);
 				if (event != null) {
@@ -212,7 +221,15 @@ public class ForestryccPlugin extends Plugin
 
 	private void activeRootsRemoveExpired() {
 		// remove if expired
-		events_alive.removeIf(entry -> Duration.between(events_starttime.get(entry), Instant.now()).toSeconds() > event_duration);
+		for (int e=0; e<events_alive.size(); e++) {
+			// event duration
+			long duration = eventDuration(events_type.get(events_alive.get(e)));
+			// remove event
+			if (Duration.between(events_starttime.get(events_alive.get(e)), Instant.now()).toSeconds() > duration) {
+				Location event = Location.findFromName(events_alive.get(e));
+				removeEvent(event);
+			}
+		}
 	}
 
 	// -------------------------------------------------------------------------- UPDATE TIMER
@@ -229,8 +246,10 @@ public class ForestryccPlugin extends Plugin
 		if (events_alive.contains(event.getName())) {
 			// delete existing ui
 			deleteTimerUI(event);
+			// event duration
+			long duration = eventDuration(events_type.get(event.getName()));
 			// calc new duration
-			long new_duration = event_duration - Duration.between(events_starttime.get(event.getName()), Instant.now()).toSeconds();
+			long new_duration = duration - Duration.between(events_starttime.get(event.getName()), Instant.now()).toSeconds();
 			if (new_duration <= 0) { return; }
 			// create new timer
 			String tooltip = generateTooltip(event);
@@ -242,9 +261,11 @@ public class ForestryccPlugin extends Plugin
 		if (events_alive.contains(event.getName())) {
 			// delete existing ui
 			deleteTimerUI(event);
+			// event duration
+			long duration = eventDuration(events_type.get(event.getName()));
 			// calc new duration
-			long new_duration = event_duration - Duration.between(events_starttime.get(event.getName()), Instant.now()).toSeconds();
-			if (new_duration < 0) { return; }
+			long new_duration = duration - Duration.between(events_starttime.get(event.getName()), Instant.now()).toSeconds();
+			if (new_duration <= 0) { return; }
 			// determine correct image
 			AsyncBufferedImage image = null;
 			if (config.expirationWarning() && activeRootsExpiringSoon(event.getName())) {
@@ -279,7 +300,7 @@ public class ForestryccPlugin extends Plugin
 		if (event.getName().equals(Location.N_SEERS.getName()) && config.enableNSeers()) { return true; }
 		if (event.getName().equals(Location.SEERS.getName()) && config.enableSeers()) { return true; }
 		if (event.getName().equals(Location.GLADE.getName()) && config.enableGlade()) { return true; }
-		if (event.getName().equals(Location.BEE.getName()) && config.enableBees()) { return true; }
+		if (event.getName().equals(Location.HIVE.getName()) && config.enableBees()) { return true; }
 		if (event.getName().equals(Location.ZALC.getName()) && config.enableZalc()) { return true; }
 		if (event.getName().equals(Location.MYTH.getName()) && config.enableMyth()) { return true; }
 		if (event.getName().equals(Location.ARC.getName()) && config.enableArc()) { return true; }
@@ -316,6 +337,17 @@ public class ForestryccPlugin extends Plugin
 
 	// -------------------------------------------------------------------------- EVENTS
 
+	private long eventDuration(String event_type)
+	{
+		long duration = event_duration_default;
+		if (event_type != null) {
+			if (event_type.equals("BEES")) {
+				duration = event_duration_bees;
+			}
+		}
+		return duration;
+	}
+
 	private void newEvent(Location event, String event_type) {
 		// update lists
 		events_alive.add(event.getName());
@@ -326,7 +358,9 @@ public class ForestryccPlugin extends Plugin
 		deleteTimer(event);
 		// create timer
 		String tooltip = generateTooltip(event);
-		createTimer(event, event_duration, tooltip);
+		// determine duration
+		long duration = eventDuration(event_type);
+		createTimer(event, duration, tooltip);
 	}
 
 	private void reviveEvent(Location event) {
@@ -413,6 +447,23 @@ public class ForestryccPlugin extends Plugin
 
 	// -------------------------------------------------------------------------- CREATE TIMER
 
+	private void NotifyNew(Location event, String event_type) {
+		// exit if disabled
+		if (!config.idleNotificationEnabled()) {
+			return;
+		}
+		// notify
+		if (validEvent(event)) {
+			if (event_type == null) {
+				notifier.notify("New forestry cc event!");
+			} else {
+				notifier.notify("New forestry cc " + event_type.toLowerCase() + " event!");
+			}
+		}
+	}
+
+	// -------------------------------------------------------------------------- CREATE TIMER
+
 	private void displayTimer(Location event, String event_type, String msg) {
 
 		if (event.isRevive(msg)) {
@@ -431,6 +482,7 @@ public class ForestryccPlugin extends Plugin
 				Confirm(event, event_type);
 			} else {
 				New(event, event_type);
+				NotifyNew(event, event_type);
 			}
 
 		} else if (event.isDead(msg)) {
@@ -443,6 +495,7 @@ public class ForestryccPlugin extends Plugin
 				Confirm(event, event_type);
 			} else {
 				New(event, event_type);
+				NotifyNew(event, event_type);
 			}
 
 		}
